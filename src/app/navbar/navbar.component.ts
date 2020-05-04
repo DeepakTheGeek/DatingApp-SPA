@@ -13,7 +13,7 @@ export class NavbarComponent implements OnInit {
 
   ngOnInit(): void {}
 
-  Login() {
+  login() {
     this.authService.login(this.model).subscribe(
       (next) => {
         console.log('logged in successfully.');
@@ -22,5 +22,15 @@ export class NavbarComponent implements OnInit {
         console.log('login failed');
       }
     );
+  }
+
+  loggedIn() {
+    const token = localStorage.getItem('token');
+    return !!token;
+  }
+
+  logout() {
+    localStorage.removeItem('token');
+    console.log('logged out.');
   }
 }
