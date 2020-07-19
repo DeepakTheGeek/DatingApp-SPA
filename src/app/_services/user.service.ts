@@ -13,7 +13,7 @@ const httpOptions = {
   providedIn: 'root'
 })
 export class UserService {
-  baseurl = environment.apiURL + 'user/';
+  baseurl = environment.apiURL + 'users/';
   constructor(private http: HttpClient) { }
 
   getUsers(): Observable<User[]> {
