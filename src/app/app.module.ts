@@ -11,16 +11,26 @@ import { JwtModule } from '@auth0/angular-jwt';
 import { AppComponent } from './app.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { LoginComponent } from './login/login.component';
-import { AuthService } from './_services/auth.service';
 import { HomeComponent } from './home/home.component';
 import { RegisterComponent } from './register/register.component';
-import { ErrorInterceptorProvider } from './_services/error.interceptor';
 import { MemberListComponent } from './members/member-list/member-list.component';
 import { ListsComponent } from './lists/lists.component';
 import { MessagesComponent } from './messages/messages.component';
 import { appRoutes } from './routes';
 import { MemberCardComponent } from './members/member-card/member-card/member-card.component';
 import { MemberDetailComponent } from './members/member-detail/member-detail.component';
+
+import { ErrorInterceptorProvider } from './_services/error.interceptor';
+
+import { AuthGuard } from './_guards/auth.guard';
+
+import { MemberDetailResolver } from './_resolvers/member-detail.resolver';
+
+import { AuthService } from './_services/auth.service';
+import { UserService } from './_services/user.service';
+import { AlertifyService } from './_services/alertify.service';
+import { MemberListResolver } from './_resolvers/member-list.resolver';
+
 
 export function tokenGetter() {
   return localStorage.getItem('token');
@@ -55,7 +65,15 @@ export function tokenGetter() {
       }
     })
   ],
-  providers: [AuthService, ErrorInterceptorProvider],
+  providers: [
+    AuthService,
+    ErrorInterceptorProvider,
+    AuthGuard,
+    AlertifyService,
+    UserService,
+    MemberDetailResolver,
+    MemberListResolver
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
