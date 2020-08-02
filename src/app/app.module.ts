@@ -33,10 +33,7 @@ import { MemberEditResolver } from './_resolvers/member-edit.resolver';
 import { AuthService } from './_services/auth.service';
 import { UserService } from './_services/user.service';
 import { AlertifyService } from './_services/alertify.service';
-
-
-
-
+import { PreventUnsavedChangesGuard } from './_guards/prevent-unsaved-changes.guard';
 
 export function tokenGetter() {
   return localStorage.getItem('token');
@@ -77,6 +74,7 @@ export function tokenGetter() {
     AuthService,
     ErrorInterceptorProvider,
     AuthGuard,
+    PreventUnsavedChangesGuard,
     AlertifyService,
     UserService,
     MemberDetailResolver,
