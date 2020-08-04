@@ -5,7 +5,6 @@ import { environment } from 'src/environments/environment';
 import { AuthService } from 'src/app/_services/auth.service';
 import { UserService } from 'src/app/_services/user.service';
 import { AlertifyService } from 'src/app/_services/alertify.service';
-import { error } from 'protractor';
 
 @Component({
   selector: 'app-photo-editor',
@@ -18,10 +17,12 @@ export class PhotoEditorComponent implements OnInit {
   hasBaseDropZoneOver = false;
   response = '';
   baseUrl = environment.apiURL;
+  loggedInUserId;
 
   constructor(private authService: AuthService, private userService: UserService, private alertify: AlertifyService) {}
 
   ngOnInit(): void {
+    this.loggedInUserId = this.authService.decodedToken.nameid;
     this.initializeUploader();
   }
 
@@ -31,7 +32,7 @@ export class PhotoEditorComponent implements OnInit {
 
   initializeUploader() {
     this.uploader = new FileUploader({
-      url: this.baseUrl + 'users/' + this.authService.decodedToken.nameid + '/photos',
+      url: this.baseUrl + 'users/' + this.loggedInUserId + '/photos',
       authToken: 'Bearer ' + localStorage.getItem('token'),
       isHTML5: true,
       allowedFileType: ['image'],
@@ -50,8 +51,10 @@ export class PhotoEditorComponent implements OnInit {
   }
 
   setMainPhoto(photo: Photo) {
-      this.userService.setMainPhoto(this.authService.decodedToken.nameid, photo.id).subscribe(() => {
-        this.alertify.success('Photo set to main.');
+      this.userService.setMainPhoto(this.loggedInUserId, photo.id).subscribe(() => {
+        const currentMainPhoto = this.Photos.filter(p => p.isMain === true)[0];
+        currentMainPhoto.isMain = false;
+        photo.isMain = true;
       }, error => {
         this.alertify.error(error);
       });
