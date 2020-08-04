@@ -3,6 +3,9 @@ import { Photo } from 'src/app/_model/Photo';
 import { FileUploader, ParsedResponseHeaders, FileItem } from 'ng2-file-upload';
 import { environment } from 'src/environments/environment';
 import { AuthService } from 'src/app/_services/auth.service';
+import { UserService } from 'src/app/_services/user.service';
+import { AlertifyService } from 'src/app/_services/alertify.service';
+import { error } from 'protractor';
 
 @Component({
   selector: 'app-photo-editor',
@@ -16,7 +19,7 @@ export class PhotoEditorComponent implements OnInit {
   response = '';
   baseUrl = environment.apiURL;
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, private userService: UserService, private alertify: AlertifyService) {}
 
   ngOnInit(): void {
     this.initializeUploader();
@@ -41,9 +44,16 @@ export class PhotoEditorComponent implements OnInit {
     (item: FileItem, response: string, status: number, headers: ParsedResponseHeaders) => {
       if (response) {
         const res: Photo = JSON.parse(response);
-        // console.log('Photo:', res);
         this.Photos.push(res);
       }
     };
+  }
+
+  setMainPhoto(photo: Photo) {
+      this.userService.setMainPhoto(this.authService.decodedToken.nameid, photo.id).subscribe(() => {
+        this.alertify.success('Photo set to main.');
+      }, error => {
+        this.alertify.error(error);
+      });
   }
 }
