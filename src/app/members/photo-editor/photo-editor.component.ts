@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Photo } from 'src/app/_model/Photo';
-import { FileUploader } from 'ng2-file-upload';
+import { FileUploader, ParsedResponseHeaders, FileItem } from 'ng2-file-upload';
 import { environment } from 'src/environments/environment';
 import { AuthService } from 'src/app/_services/auth.service';
 
@@ -36,5 +36,14 @@ export class PhotoEditorComponent implements OnInit {
       autoUpload: false,
       maxFileSize: 10 * 1024 * 1024
     });
+    this.uploader.onAfterAddingFile = (file) => { file.withCredentials = false; };
+    this.uploader.onSuccessItem =
+    (item: FileItem, response: string, status: number, headers: ParsedResponseHeaders) => {
+      if (response) {
+        const res: Photo = JSON.parse(response);
+        // console.log('Photo:', res);
+        this.Photos.push(res);
+      }
+    };
   }
 }
