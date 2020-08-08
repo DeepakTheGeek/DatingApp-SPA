@@ -16,11 +16,19 @@ export class UserService {
     return this.http.get<User[]>(this.baseurl);
   }
 
-  getUser(id): Observable<User> {
+  getUser(id: number): Observable<User> {
     return this.http.get<User>(this.baseurl + id);
   }
 
-  updateUser(id, user) {
+  updateUser(id: number, user: User) {
     return this.http.put(this.baseurl + id, user);
+  }
+
+  setMainPhoto(userId: number, id: number) {
+    return this.http.post(this.baseurl + userId + '/photos/' + id + '/SetMain', {});
+  }
+
+  deletePhoto(userId: number, id: number) {
+    return this.http.delete(this.baseurl + userId + '/photos/' + id);
   }
 }
