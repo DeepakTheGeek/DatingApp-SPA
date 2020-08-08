@@ -10,10 +10,21 @@ import { Router } from '@angular/router';
 })
 export class NavbarComponent implements OnInit {
   model: any = {};
+  photoURL: string;
 
-  constructor(public authService: AuthService, private alertify: AlertifyService, private router: Router) {}
+  constructor(
+    public authService: AuthService,
+    private alertify: AlertifyService,
+    private router: Router
+  ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.authService.mainPhotoURL.subscribe(
+      (photoURL) => {
+        this.photoURL = photoURL;
+      }
+    );
+  }
 
   login() {
     this.authService.login(this.model).subscribe(

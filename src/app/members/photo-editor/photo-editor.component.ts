@@ -5,6 +5,7 @@ import { environment } from 'src/environments/environment';
 import { AuthService } from 'src/app/_services/auth.service';
 import { UserService } from 'src/app/_services/user.service';
 import { AlertifyService } from 'src/app/_services/alertify.service';
+import { User } from 'src/app/_model/User';
 
 @Component({
   selector: 'app-photo-editor',
@@ -13,7 +14,6 @@ import { AlertifyService } from 'src/app/_services/alertify.service';
 })
 export class PhotoEditorComponent implements OnInit {
   @Input() Photos: Photo[];
-  @Output() getMemberPhotoChange = new EventEmitter<string>();
   uploader: FileUploader;
   hasBaseDropZoneOver = false;
   response = '';
@@ -55,8 +55,11 @@ export class PhotoEditorComponent implements OnInit {
       this.userService.setMainPhoto(this.loggedInUserId, photo.id).subscribe(() => {
         const currentMainPhoto = this.Photos.filter(p => p.isMain === true)[0];
         currentMainPhoto.isMain = false;
-        this.getMemberPhotoChange.emit(photo.url);
         photo.isMain = true;
+        this.authService.setMainPhotoURL(photo.url);
+        const user: User = JSON.parse( localStorage.getItem('user'));
+        user.photoURL = photo.url;
+        localStorage.setItem('user', JSON.stringify(user));
       }, error => {
         this.alertify.error(error);
       });
