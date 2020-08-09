@@ -3,15 +3,38 @@
     <hr>
   
     <div class="form-group">
-      <input type="text" class="form-control" formControlName="username" placeholder="Username">
+      <input type="text" 
+      [ngClass]="{'is-invalid': username.errors && username.touched}" 
+      class="form-control" formControlName="username" placeholder="Username">
+      <div class="invalid-feedback">Please choose a username.</div>
     </div>
 
     <div class="form-group">
-      <input type="password" class="form-control" formControlName="password" placeholder="Password">
+      <input type="password" 
+      [ngClass]="{'is-invalid': password.errors && password.touched}"
+      class="form-control" formControlName="password" placeholder="Password">
+      <div class="invalid-feedback" 
+      *ngIf="password.hasError('required') 
+      && password.touched">Password is required.</div>
+      <div class="invalid-feedback" 
+      *ngIf="password.hasError('minlength') 
+      && password.touched">Password must be at least {{password.errors.minlength.requiredLength}} characters long.</div>
+      <div class="invalid-feedback" 
+      *ngIf="password.hasError('maxlength') 
+      && password.touched">Password can not exceed {{password.errors.maxlength.requiredLength}} characters.</div>
     </div>
 
     <div class="form-group">
-      <input type="password" class="form-control" formControlName="confirmPassword" placeholder="Confirm Password">
+      <input type="password" 
+      [ngClass]="{'is-invalid': 
+      confirmPassword.errors && confirmPassword.touched || confirmPassword.touched && registerForm.hasError('mismatch')}"
+      class="form-control" formControlName="confirmPassword" placeholder="Confirm Password">
+      <div class="invalid-feedback" 
+      *ngIf="confirmPassword.hasError('required') 
+      && confirmPassword.touched">Confirm Password is required.</div>
+      <div class="invalid-feedback" 
+      *ngIf="registerForm.hasError('mismatch') 
+      && confirmPassword.touched">Passwords must match.</div>
     </div>
   
     <div class="form-group text-center">
@@ -21,5 +44,7 @@
     
   </form>
 
-  <p>Form Value: {{registerForm.value | json}}</p>
+  <p>username: {{username.value}}</p>
+  <p>password: {{password.value}}</p>
+  <p>confirmPassword: {{confirmPassword.value}}</p>
   <p>Form Status: {{registerForm.status | json}}</p>
